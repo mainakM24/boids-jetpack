@@ -26,7 +26,7 @@ data class Boid(
         acceleration += align * 2f
         acceleration += cohesion * 1f
         acceleration += separation * 2f
-        acceleration = acceleration / acceleration.getDistance() * maxForce
+        acceleration = limitMag(acceleration, maxForce)
 
         newVelocity = this.velocity + acceleration * dt
         newVelocity = newVelocity / newVelocity.getDistance() * maxSpeed
@@ -112,7 +112,7 @@ data class Boid(
 
         boids.forEach { other ->
             val distance = (other.position - this.position).getDistance()
-            if (other != this &&  distance <= localArea / 2f) {
+            if ((other != this) &&  (distance <= localArea / 2f) && (distance != 0f)) {
                 var diff = this.position - other.position
                 diff = (diff / diff.getDistance()) / distance
                 steer += diff
