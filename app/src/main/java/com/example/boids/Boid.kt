@@ -23,10 +23,10 @@ data class Boid(
         val separation = separation(boids)
 
         acceleration += wall * 1f
-        acceleration += align * 1f
+        acceleration += align * 2f
         acceleration += cohesion * 1f
-        acceleration += separation * 1.5f
-        acceleration = limitMag(acceleration, maxForce)
+        acceleration += separation * 2f
+        acceleration = acceleration / acceleration.getDistance() * maxForce
 
         newVelocity = this.velocity + acceleration * dt
         newVelocity = newVelocity / newVelocity.getDistance() * maxSpeed
@@ -76,11 +76,10 @@ data class Boid(
 
         if (neighborCount > 0) {
             steer /= neighborCount.toFloat()
-            steer = limitMag(steer / steer.getDistance() * maxSpeed, maxSpeed)
+            steer = steer / steer.getDistance() * maxSpeed
             steer = steer - this.velocity
             steer = limitMag(steer, maxForce)
         }
-
         return steer
     }
 
@@ -99,7 +98,7 @@ data class Boid(
         if (neighborCount > 0) {
             steer /= neighborCount.toFloat()
             steer = steer - this.position
-            steer = limitMag(steer / steer.getDistance() * maxSpeed, maxSpeed)
+            steer = steer / steer.getDistance() * maxSpeed
             steer = steer - this.velocity
             steer = limitMag(steer, maxForce)
         }
@@ -167,7 +166,6 @@ data class Boid(
         }
         return acceleration
     }
-
 
     fun limitMag(vector : Offset, maxMag: Float) : Offset {
 
