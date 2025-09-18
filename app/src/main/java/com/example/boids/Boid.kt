@@ -6,8 +6,9 @@ data class Boid(
     var position : Offset,
     var velocity : Offset,
     var maxSpeed : Float = 250f,
-    var maxForce : Float = 300f,
-    val localArea : Float = 250f
+    var maxForce : Float = 200f,
+    val localArea : Float = 400f,
+    val separationRad : Float = 300f
 ) {
     fun moveBoid(boids: List<Boid>, dt : Float, width : Float, height : Float) : Boid  {
         var acceleration = Offset.Zero
@@ -112,7 +113,7 @@ data class Boid(
 
         boids.forEach { other ->
             val distance = (other.position - this.position).getDistance()
-            if ((other != this) &&  (distance <= localArea / 2f) && (distance != 0f)) {
+            if ((other != this) &&  (distance <= separationRad) && (distance != 0f)) {
                 var diff = this.position - other.position
                 diff = (diff / diff.getDistance()) / distance
                 steer += diff
